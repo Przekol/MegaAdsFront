@@ -1,6 +1,7 @@
 import * as React from 'react';
 import styles from './Header.module.css';
-import { Button } from '../common/Button';
+import { Button, Input } from '../../common/UI';
+
 export const Header = () => (
   <header>
     <h1>
@@ -8,7 +9,7 @@ export const Header = () => (
     </h1>
     <Button>Dodaj ogłoszenie</Button>
     <div className={styles.search}>
-      <input type="text" /> <Button>Szukaj</Button>
+      <Input type="text" /> <Button>Szukaj</Button>
     </div>
   </header>
 );

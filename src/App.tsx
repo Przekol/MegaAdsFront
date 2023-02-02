@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Header } from './components/layout/Header';
-import { Map } from './components/Map/Map';
+import { Header } from './components/layout';
+import { Map } from './components/Map';
 
 export function App() {
   return (
