@@ -1,27 +1,5 @@
 import React from 'react';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import logo from './logo.svg';
-import './App.css';
-import { TestInterface } from 'types';
 
-function App() {
-  const foobar: TestInterface = {
-    x: 23,
-  };
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export function App() {
+  return <p>Test..</p>;
 }
-
-export default App;
