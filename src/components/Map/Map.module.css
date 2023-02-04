@@ -1,4 +1,6 @@
 .map {
-  background: green;
+  height: 100%;
+}
+.leafletContainer {
   height: 100%;
 }
