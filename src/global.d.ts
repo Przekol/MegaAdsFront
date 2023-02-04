@@ -3,3 +3,4 @@ declare module '*.css' {
   export default content;
 }
 declare module '*.module.scss';
+declare module '*.png';
