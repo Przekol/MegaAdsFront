@@ -7,4 +7,6 @@
   font-size: 0.8rem;
   padding: 0.5em 2.5em;
   border-radius: 2px;
+  text-decoration: none;
+  cursor: pointer;
 }
