@@ -2,8 +2,7 @@ import * as React from 'react';
 import styles from './AddForm.module.css';
 import { Button, Input } from '../common/UI';
 import { FormEvent, useState } from 'react';
-import { apiClient, geocode } from '../../servises/api';
-import { AddAdRequest, GetOneAdResponse } from 'types';
+import { addAdResponse, geocodingResponse } from '../../services/api';
 
 export const AddForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,13 +19,18 @@ export const AddForm = () => {
     event.preventDefault();
     setLoading(true);
     try {
-      const { lat, lon } = await geocode(form.address);
+      const resultGeocoding = await geocodingResponse(form.address);
+      if (resultGeocoding.ok && resultGeocoding.data) {
+        const { lat, lon } = resultGeocoding.data;
+        const result = await addAdResponse({ ...form, lat, lon });
 
-      const result = await apiClient.post<GetOneAdResponse, AddAdRequest>('/ad', { ...form, lat, lon });
-
-      if (result.ok && result.data) {
-        console.log(result.data);
-        setId(result.data.id);
+        if (result.ok && result.data) {
+          setId(result.data.id);
+        } else {
+          console.log(result.error ? result.error : 'Wystąpił nieznany błąd');
+        }
+      } else {
+        console.log(resultGeocoding.error ? resultGeocoding.error : 'Wystąpił nieznany błąd');
       }
     } finally {
       setLoading(false);

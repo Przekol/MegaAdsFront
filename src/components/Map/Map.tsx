@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { useContext, useEffect, useState } from 'react';
 import { SearchContext } from '../../context/search.context';
 import { GetListOfAdsResponse } from 'types';
-import { apiClient } from '../../servises/api';
+import { searchAdResponse } from '../../services/api';
 import { SingleAd } from './SingleAd';
 
 export const Map = () => {
@@ -15,10 +15,12 @@ export const Map = () => {
 
   useEffect(() => {
     (async () => {
-      const result = await apiClient.get<GetListOfAdsResponse>(`/ad/search/${search}`);
+      const result = await searchAdResponse(search);
 
       if (result.ok && result.data) {
         setAds(result.data);
+      } else {
+        console.log(result.error ? result.error : 'Wystąpił nieznany błąd');
       }
     })();
   }, [search]);

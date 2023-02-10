@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { GetOneAdResponse } from 'types';
-import { apiClient } from '../../servises/api';
+import { getOneAdResponse } from '../../services/api';
 
 interface Props {
   id: string;
@@ -10,10 +10,12 @@ export const SingleAd = (props: Props) => {
   const [ad, setAd] = useState<GetOneAdResponse | null>(null);
   useEffect(() => {
     (async () => {
-      const result = await apiClient.get<GetOneAdResponse>(`/ad/${props.id}`);
+      const result = await getOneAdResponse(props.id);
 
       if (result.ok && result.data) {
         setAd(result.data);
+      } else {
+        console.log(result.error ? result.error : 'Wystąpił nieznany błąd');
       }
     })();
   }, []);
