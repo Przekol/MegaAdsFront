@@ -21,6 +21,16 @@ class ApiClient {
     }
   }
 
+  async post<T, B>(endpoint: string, body: B): Promise<ClientApiResponse<T>> {
+    const response = await fetch(this.getUrl(endpoint), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(body),
+    });
+    return response.json();
+  }
+
   private getUrl(endpoint: string): string {
     return this.baseUrl + endpoint;
   }
