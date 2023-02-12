@@ -3,8 +3,14 @@ import styles from './AddForm.module.css';
 import { Button, Input } from '../common/UI';
 import { FormEvent, useState } from 'react';
 import { addAdResponse, geocodingResponse } from '../../services/api';
+import { useMessageModal } from '../../context';
 
-export const AddForm = () => {
+interface Props {
+  setId: React.Dispatch<React.SetStateAction<string>>;
+  closeAddForm: () => void;
+}
+
+export const AddForm = ({ setId, closeAddForm }: Props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [form, setForm] = useState({
     name: '',
@@ -13,11 +19,12 @@ export const AddForm = () => {
     url: '',
     address: '',
   });
-  const [id, setId] = useState<string>('');
+  const { openMessageModal } = useMessageModal();
 
   const saveAd = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
+
     try {
       const resultGeocoding = await geocodingResponse(form.address);
       if (resultGeocoding.ok && resultGeocoding.data) {
@@ -26,14 +33,19 @@ export const AddForm = () => {
 
         if (result.ok && result.data) {
           setId(result.data.id);
+          openMessageModal(
+            `Twoje ogłoszenie: ${form.name} zostało poprawnie dodane do serwisu pod ID: ${result.data.id}`,
+          );
         } else {
-          console.log(result.error ? result.error : 'Wystąpił nieznany błąd');
+          openMessageModal(result.error ? result.error : 'Wystąpił nieznany błąd', true);
         }
       } else {
         console.log(resultGeocoding.error ? resultGeocoding.error : 'Wystąpił nieznany błąd');
+        openMessageModal(resultGeocoding.error ? resultGeocoding.error : 'Wystąpił nieznany błąd', true);
       }
     } finally {
       setLoading(false);
+      closeAddForm();
     }
   };
   const updateForm = (key: string, value: string | number) => {
@@ -46,19 +58,9 @@ export const AddForm = () => {
   if (loading) {
     return <h2>Trwa dodawanie ogłoszenia...</h2>;
   }
-  if (id) {
-    return (
-      <div>
-        <h2>
-          Twoje ogłoszenie {form.name} zostało poprawnie dodane do serwisu pod ID: {id}
-        </h2>
-        <Button to="/">Powrót na stronę główną</Button>
-      </div>
-    );
-  }
 
   return (
-    <div className={styles.container}>
+    <>
       <form className={styles.addForm} onSubmit={saveAd}>
         <h1>Dodawanie ogłoszenia</h1>
         <div className={styles.formBox}>
@@ -132,6 +134,6 @@ export const AddForm = () => {
         </div>
         <Button type="submit">Zapisz</Button>
       </form>
-    </div>
+    </>
   );
 };
