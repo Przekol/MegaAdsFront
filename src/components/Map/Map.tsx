@@ -3,15 +3,21 @@ import styles from './Map.module.css';
 import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet';
 import '../../utils/fix-map-icon';
 import 'leaflet/dist/leaflet.css';
-import { useContext, useEffect, useState } from 'react';
-import { SearchContext } from '../../context/search.context';
+import { useEffect, useState } from 'react';
 import { GetListOfAdsResponse } from 'types';
 import { searchAdResponse } from '../../services/api';
 import { SingleAd } from './SingleAd';
+import { MessageModal, Modal as AddFormModal } from '../common/UI/modals';
+import { AddForm } from '../AddForm/AddForm';
+import { useAddFromModal, useMessageModal, useSearch } from '../../context';
 
 export const Map = () => {
-  const { search } = useContext(SearchContext);
+  const { search } = useSearch();
+  const { messageModal, closeMessageModal, openMessageModal } = useMessageModal();
+  const { addFromModalIsOpen, closeAddFormModal } = useAddFromModal();
+
   const [ads, setAds] = useState<GetListOfAdsResponse>([]);
+  const [id, setId] = useState<string>('');
 
   useEffect(() => {
     (async () => {
@@ -20,13 +26,22 @@ export const Map = () => {
       if (result.ok && result.data) {
         setAds(result.data);
       } else {
-        console.log(result.error ? result.error : 'Wystąpił nieznany błąd');
+        openMessageModal(result.error ? result.error : 'Wystąpił nieznany błąd', true);
       }
     })();
-  }, [search]);
+  }, [search, id]);
 
   return (
     <div className={styles.map}>
+      <AddFormModal isOpen={addFromModalIsOpen} onRequestClose={closeAddFormModal}>
+        <AddForm setId={setId} closeAddForm={closeAddFormModal} />
+      </AddFormModal>
+      <MessageModal
+        isOpen={messageModal.isOpen}
+        closeModal={closeMessageModal}
+        message={messageModal.message}
+        isErrorMessage={messageModal.isError}
+      />
       <MapContainer className={styles.leafletContainer} center={[50.2657152, 18.9945008]} zoom={13}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

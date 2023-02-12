@@ -1,0 +1,19 @@
+.messageBox {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.messageText {
+  font-size: 18px;
+}
+
+.messageError {
+  color: red;
+  font-weight: bold;
+}
